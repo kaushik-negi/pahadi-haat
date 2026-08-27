@@ -23,8 +23,11 @@ export default function DriverDashboard() {
     setLoading(true);
     setError(null);
     fetchDeliveries()
-      .then(setDeliveries)
-      .catch((err) => setError(err.message))
+      .then((d) => setDeliveries(Array.isArray(d) ? d : []))
+      .catch((err) => {
+        setError(err.message);
+        setDeliveries([]);
+      })
       .finally(() => setLoading(false));
   };
 

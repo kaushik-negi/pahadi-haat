@@ -20,13 +20,18 @@ export default function ShopDetails() {
     Promise.all([fetchShop(id), fetchProducts({ shopId: id })])
       .then(([s, prods]) => {
         setShop(s);
-        setProducts(prods);
+        setProducts(Array.isArray(prods) ? prods : []);
       })
-      .catch((err) => setError(err.message))
+      .catch((err) => {
+        setError(err.message);
+        setProducts([]);
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, [id]);
+
+  const safeProducts = Array.isArray(products) ? products : [];
 
   if (loading) {
     return <main className="page"><div className="page__body u-container"><Loading label="Loading shop…" /></div></main>;
@@ -56,11 +61,11 @@ export default function ShopDetails() {
           </div>
         </div>
         <h3 className="page__subtitle">Inventory</h3>
-        {products.length === 0 ? (
+        {safeProducts.length === 0 ? (
           <p className="empty-state">This shop hasn't listed any products yet.</p>
         ) : (
           <div className="products__grid">
-            {products.map((p) => <ProductCard product={p} onAdd={addToCart} key={p.id} />)}
+            {safeProducts.map((p) => <ProductCard product={p} onAdd={addToCart} key={p.id} />)}
           </div>
         )}
       </div>

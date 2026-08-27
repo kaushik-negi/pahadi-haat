@@ -28,10 +28,14 @@ export default function SellerDashboard() {
     Promise.all([fetchMyShop(), fetchMyInventory(), fetchCategories()])
       .then(([s, inv, cats]) => {
         setShop(s);
-        setInventory(inv);
-        setCategories(cats);
+        setInventory(Array.isArray(inv) ? inv : []);
+        setCategories(Array.isArray(cats) ? cats : []);
       })
-      .catch((err) => setError(err.message))
+      .catch((err) => {
+        setError(err.message);
+        setInventory([]);
+        setCategories([]);
+      })
       .finally(() => setLoading(false));
   };
 

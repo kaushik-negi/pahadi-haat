@@ -57,5 +57,9 @@ export async function apiFetch(path, { method = 'GET', body, auth = true, header
     throw new Error(message);
   }
 
+  if (data === null && response.status !== 204) {
+    throw new Error(`Server returned non-JSON response (${response.status})`);
+  }
+
   return data;
 }

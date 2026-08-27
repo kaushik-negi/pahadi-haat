@@ -18,14 +18,21 @@ export default function Home() {
     setError(null);
     Promise.all([fetchCategories(), fetchProducts()])
       .then(([cats, prods]) => {
-        setCategories(cats);
-        setProducts(prods);
+        setCategories(Array.isArray(cats) ? cats : []);
+        setProducts(Array.isArray(prods) ? prods : []);
       })
-      .catch((err) => setError(err.message))
+      .catch((err) => {
+        setError(err.message);
+        setCategories([]);
+        setProducts([]);
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, []);
+
+  const safeCategories = Array.isArray(categories) ? categories : [];
+  const safeProducts = Array.isArray(products) ? products : [];
 
   return (
     <main id="top">
@@ -54,7 +61,7 @@ export default function Home() {
           <div className="u-container"><Loading label="Loading categories…" /></div>
         ) : (
           <div className="categories__grid">
-            {categories.map((c) => (
+            {safeCategories.map((c) => (
               <Link className="category-card" to={`/category/${c.slug}`} aria-label={`Browse ${c.label}`} key={c.slug}>
                 <span className="category-card__img-wrap"><img src={c.img} alt={`${c.label} category`} loading="lazy" /></span>
                 <span className="category-card__label">{c.label}</span>
@@ -66,7 +73,7 @@ export default function Home() {
 
       <section className="deals" aria-label="Current deals and offers">
         <div className="deals__track" tabIndex={0}>
-          {DEALS.map((src, i) => (
+          {(DEALS || []).map((src, i) => (
             <div className="deals__item" key={src}><img src={src} alt={`Promotional offer banner ${i + 1}`} loading="lazy" /></div>
           ))}
         </div>
@@ -75,7 +82,7 @@ export default function Home() {
       <section className="section" id="local-produce" aria-labelledby="produceHeading">
         <div className="section__head"><h2 className="section__title" id="produceHeading">Local Produce</h2></div>
         <div className="produce__grid">
-          {PRODUCE.map((p) => (
+          {(PRODUCE || []).map((p) => (
             <a className="produce-card" href="#" aria-label={`Browse ${p.label}`} key={p.label}>
               <img src={p.img} alt={p.label} loading="lazy" />
               <span className="produce-card__label">{p.label}</span>
@@ -90,7 +97,7 @@ export default function Home() {
           <div className="u-container"><Loading label="Loading products…" /></div>
         ) : (
           <div className="products__grid">
-            {products.map((p) => <ProductCard product={p} onAdd={addToCart} key={p.id} />)}
+            {safeProducts.map((p) => <ProductCard product={p} onAdd={addToCart} key={p.id} />)}
           </div>
         )}
       </section>

@@ -12,12 +12,17 @@ export default function ShopList() {
     setLoading(true);
     setError(null);
     fetchShops()
-      .then(setShops)
-      .catch((err) => setError(err.message))
+      .then((s) => setShops(Array.isArray(s) ? s : []))
+      .catch((err) => {
+        setError(err.message);
+        setShops([]);
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, []);
+
+  const safeShops = Array.isArray(shops) ? shops : [];
 
   return (
     <main className="page">
@@ -29,9 +34,11 @@ export default function ShopList() {
         {error && <ErrorBanner message={error} onRetry={load} />}
         {loading ? (
           <Loading label="Loading shops…" />
+        ) : safeShops.length === 0 ? (
+          <p className="empty-state">No shops found near you right now.</p>
         ) : (
           <div className="shop-list">
-            {shops.map((s) => (
+            {safeShops.map((s) => (
               <Link className="shop-row" to={`/shop/${s.id}`} key={s.id}>
                 <span className="shop-row__avatar" aria-hidden="true">🏬</span>
                 <span className="shop-row__info">

@@ -19,16 +19,22 @@ export default function Category() {
     setError(null);
     Promise.all([fetchCategories(), fetchProducts(slug ? { category: slug } : {})])
       .then(([cats, prods]) => {
-        setCategories(cats);
-        setProducts(prods);
+        setCategories(Array.isArray(cats) ? cats : []);
+        setProducts(Array.isArray(prods) ? prods : []);
       })
-      .catch((err) => setError(err.message))
+      .catch((err) => {
+        setError(err.message);
+        setCategories([]);
+        setProducts([]);
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, [slug]);
 
-  const category = slug ? categories.find((c) => c.slug === slug) : null;
+  const safeCategories = Array.isArray(categories) ? categories : [];
+  const safeProducts = Array.isArray(products) ? products : [];
+  const category = slug ? safeCategories.find((c) => c.slug === slug) : null;
 
   return (
     <main className="page">
@@ -40,7 +46,7 @@ export default function Category() {
       {!slug && !loading && (
         <div className="u-container">
           <div className="categories__grid" style={{ marginBottom: 40 }}>
-            {categories.map((c) => (
+            {safeCategories.map((c) => (
               <Link className="category-card" to={`/category/${c.slug}`} key={c.slug}>
                 <span className="category-card__img-wrap"><img src={c.img} alt={c.label} loading="lazy" /></span>
                 <span className="category-card__label">{c.label}</span>
@@ -54,11 +60,11 @@ export default function Category() {
         {error && <ErrorBanner message={error} onRetry={load} />}
         {loading ? (
           <Loading label="Loading products…" />
-        ) : products.length === 0 ? (
+        ) : safeProducts.length === 0 ? (
           <p className="empty-state">No products listed in this category yet.</p>
         ) : (
           <div className="products__grid">
-            {products.map((p) => <ProductCard product={p} onAdd={addToCart} key={p.id} />)}
+            {safeProducts.map((p) => <ProductCard product={p} onAdd={addToCart} key={p.id} />)}
           </div>
         )}
         <div className="page__actions">

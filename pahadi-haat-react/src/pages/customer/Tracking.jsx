@@ -42,7 +42,7 @@ export default function Tracking() {
             <div>
               <h3 className="page__subtitle">Order Tracking</h3>
               <ol className="timeline">
-                {tracking.steps.map((step) => (
+                {(tracking?.steps || []).map((step) => (
                   <li className={step.done ? 'timeline__step timeline__step--done' : 'timeline__step'} key={step.label}>
                     {step.label}
                   </li>
