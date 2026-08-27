@@ -5,7 +5,12 @@ function getApiBaseUrl() {
     if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
       return 'http://localhost:8080/api';
     }
-    return 'http://localhost:8080/api';
+    return 'https://pahadi-haat-backend.onrender.com/api';
+  }
+
+  // If only the internal service name was passed without a domain
+  if (!url.includes('.') && !url.includes('localhost')) {
+    url = `${url}.onrender.com`;
   }
 
   if (!url.startsWith('http://') && !url.startsWith('https://')) {

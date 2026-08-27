@@ -39,10 +39,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_BASE_URL
-        fromService:
-          type: web
-          name: pahadi-haat-backend
-          property: host
+        value: https://pahadi-haat-backend.onrender.com/api
 
 databases:
   # PostgreSQL Database
