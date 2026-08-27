@@ -43,7 +43,6 @@ services:
           type: web
           name: pahadi-haat-backend
           property: host
-          value: https://${host}/api
 
 databases:
   # PostgreSQL Database

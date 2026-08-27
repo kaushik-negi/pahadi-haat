@@ -1,4 +1,27 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+function getApiBaseUrl() {
+  let url = (import.meta.env.VITE_API_BASE_URL || '').trim();
+
+  if (!url) {
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      return 'http://localhost:8080/api';
+    }
+    return 'http://localhost:8080/api';
+  }
+
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+
+  url = url.replace(/\/+$/, '');
+
+  if (!url.endsWith('/api')) {
+    url = `${url}/api`;
+  }
+
+  return url;
+}
+
+const BASE_URL = getApiBaseUrl();
 
 const TOKEN_KEY = 'pahadihaat_token';
 
