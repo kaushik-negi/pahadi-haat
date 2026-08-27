@@ -1,5 +1,7 @@
 export function formatPrice(n) {
-  return `₹${Number.isInteger(n) ? n : n.toFixed(1)}`;
+  if (n === null || n === undefined || isNaN(Number(n))) return '₹0';
+  const num = Number(n);
+  return `₹${Number.isInteger(num) ? num : num.toFixed(1)}`;
 }
 
 export function slugify(str) {

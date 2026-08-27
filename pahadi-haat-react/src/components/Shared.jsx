@@ -2,13 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export function StarRating({ value }) {
-  const full = Math.round(value);
+  const num = typeof value === 'number' && !isNaN(value) ? value : 0;
+  const full = Math.round(num);
   return (
-    <span className="stars" aria-label={`${value} out of 5 stars`}>
+    <span className="stars" aria-label={`${num} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((i) => (
         <span key={i} className={i <= full ? 'stars__star stars__star--full' : 'stars__star'}>★</span>
       ))}
-      <span className="stars__value">{value.toFixed(1)}</span>
+      <span className="stars__value">{num.toFixed(1)}</span>
     </span>
   );
 }
