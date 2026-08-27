@@ -1,4 +1,4 @@
-﻿package com.pahadihaat.backend.config;
+package com.pahadihaat.backend.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
